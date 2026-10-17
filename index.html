@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Old Navy Email Ops Studio - Constructor Widget Configurator</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    code, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Custom subtle scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.25);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.45);
+    }
+
+    /* Tactile toggle switches */
+    .yn-pill-active-y {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 8px -1px rgba(16, 185, 129, 0.45);
+    }
+    .yn-pill-active-n {
+      background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 6px -1px rgba(71, 85, 105, 0.35);
+    }
+
+    /* Card hover glow */
+    .brand-glow {
+      box-shadow: 0 10px 25px -5px rgba(2, 44, 98, 0.08), 0 8px 10px -6px rgba(2, 44, 98, 0.04);
+    }
+
+    /* Toast animation */
+    .toast-animate {
+      animation: springIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes springIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.92); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen p-3 md:p-6 lg:p-8 relative selection:bg-amber-200 selection:text-slate-900">
+
+  <!-- Background Decorative Accents -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-32 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="max-w-7xl mx-auto space-y-6">
+    
+    <!-- Top Brand Header Bar -->
+    <header class="bg-white border border-slate-200/80 rounded-3xl p-5 md:p-6 shadow-sm brand-glow transition-all">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        
+        <!-- Left: Logo & Branding -->
+        <div class="flex items-center gap-4">
+          <!-- Old Navy Style Logo Badge -->
+          <div class="relative group">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#002855] via-[#003875] to-[#0a4c95] text-white flex flex-col items-center justify-center shadow-lg shadow-blue-900/25 border border-blue-400/20 transform group-hover:scale-105 transition-transform duration-200">
+              <span class="text-[9px] font-black tracking-widest text-amber-300 uppercase leading-none">OLD</span>
+              <span class="text-xs font-black tracking-tighter uppercase leading-none mt-0.5">NAVY</span>
+              <div class="w-5 h-0.5 bg-amber-300 rounded-full mt-1"></div>
+            </div>
+            <!-- Fun online status indicator -->
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center">
+              <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+            </span>
+          </div>
+
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
+                Email Ops Studio
+              </h1>
+              <span class="px-2.5 py-0.5 text-[11px] font-bold tracking-wide uppercase bg-blue-50 text-blue-700 border border-blue-200/60 rounded-full">
+                Constructor Widget
+              </span>
+            </div>
+            <p class="text-xs md:text-sm text-slate-500 font-medium">
+              Configure multi-market personalization parameters, preview the live email, and copy directly into your deployment ticket.
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick 1-Click Presets -->
+        <div class="flex flex-wrap items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2">Presets:</span>
+          
+          <button type="button" id="preset-bau" class="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50/60 border border-slate-200 shadow-sm transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer">
+            <span>⚡</span> BAU
+          </button>
+
+          <button type="button" id="preset-us-only" class="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50/60 border border-slate-200 shadow-sm transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer">
+            <span>🇺🇸</span> US Only
+          </button>
+
+          <button type="button" id="preset-cda-only" class="px-3.5 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50/60 border border-slate-200 shadow-sm transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer">
+            <span>🇨🇦</span> CDA Only
+          </button>
+
+          <button type="button" id="btn-reset" class="px-2.5 py-1.5 text-xs font-semibold text-rose-500 hover:bg-rose-50 rounded-xl transition flex items-center gap-1 cursor-pointer" title="Reset all fields to defaults">
+            <span>↺</span> Reset
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Workspace (Grid: Left Form, Right Preview) -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- Left Column: Form Fields -->
+      <section class="lg:col-span-6 space-y-5">
+        
+        <!-- Card 1: Campaign & Market Information -->
+        <div class="bg-white border border-slate-200/90 rounded-3xl p-5 md:p-6 shadow-sm brand-glow transition-all">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-5">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold shadow-sm">
+                1
+              </span>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 tracking-tight">Campaign & Market Info</h2>
+                <p class="text-[11px] text-slate-400">Target market, language, and campaign requester.</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
+              General
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Requester -->
+            <div>
+              <label for="field-requester" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                <span>👤</span> Requester Name <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <input type="text" id="field-requester" placeholder="e.g. Jordan Soukkh" class="w-full text-xs md:text-sm bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition shadow-inner">
+              </div>
+            </div>
+
+            <!-- Brand -->
+            <div>
+              <label for="field-brand" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                <span>🏷️</span> Brand
+              </label>
+              <input type="text" id="field-brand" value="Old Navy" placeholder="Old Navy" class="w-full text-xs md:text-sm bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-slate-900 font-semibold focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition shadow-inner">
+            </div>
+
+            <!-- Market (Multi-Select) -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>🌐</span> Market <span class="text-[10px] font-normal normal-case text-slate-400">(Multi-select)</span>
+                </label>
+                <div class="flex items-center gap-1 text-[11px] font-bold text-blue-600">
+                  <button type="button" id="btn-market-all" class="hover:underline cursor-pointer">All</button>
+                  <span>•</span>
+                  <button type="button" id="btn-market-us" class="hover:underline cursor-pointer">US</button>
+                  <span>•</span>
+                  <button type="button" id="btn-market-ca" class="hover:underline cursor-pointer">Canada</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-2" id="market-pills-container">
+                <button type="button" class="btn-market-pill py-2.5 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer" data-val="US">
+                  <span>🇺🇸</span> US
+                </button>
+                <button type="button" class="btn-market-pill py-2.5 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer" data-val="CDA-EN">
+                  <span>🇨🇦</span> CDA-EN
+                </button>
+                <button type="button" class="btn-market-pill py-2.5 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer" data-val="CDA-FR">
+                  <span>🇨🇦</span> CDA-FR
+                </button>
+              </div>
+            </div>
+
+            <!-- Language (Multi-Select) -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>🗣️</span> Language <span class="text-[10px] font-normal normal-case text-slate-400">(Multi-select)</span>
+                </label>
+                <button type="button" id="btn-lang-match-market" class="text-[11px] font-bold text-blue-600 hover:underline cursor-pointer">
+                  Sync with Market
+                </button>
+              </div>
+              <div class="grid grid-cols-3 gap-2" id="lang-pills-container">
+                <button type="button" class="btn-lang-pill py-2.5 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer" data-val="US">
+                  US
+                </button>
+                <button type="button" class="btn-lang-pill py-2.5 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer" data-val="CDA-EN">
+                  CDA-EN
+                </button>
+                <button type="button" class="btn-lang-pill py-2.5 px-2 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer" data-val="CDA-FR">
+                  CDA-FR
+                </button>
+              </div>
+            </div>
+
+            <!-- Total Items (Segmented buttons) -->
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center justify-between">
+                <span class="flex items-center gap-1.5"><span>📦</span> Total Items</span>
+                <span class="text-[11px] font-normal normal-case text-slate-400">Recommendation grid capacity</span>
+              </label>
+              <div class="grid grid-cols-2 gap-3">
+                <button type="button" id="btn-items-8" class="btn-items-choice py-2.5 px-4 rounded-xl border-2 font-bold text-xs md:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-blue-600 bg-blue-50/70 text-blue-700 shadow-sm" data-val="8">
+                  <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                  8 Items <span class="text-xs font-normal opacity-75">(Standard)</span>
+                </button>
+                <button type="button" id="btn-items-16" class="btn-items-choice py-2.5 px-4 rounded-xl border-2 font-bold text-xs md:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50" data-val="16">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+                  16 Items <span class="text-xs font-normal opacity-75">(Expanded)</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Card 2: Technical IDs (POD ID, TID, CID) -->
+        <div class="bg-white border border-slate-200/90 rounded-3xl p-5 md:p-6 shadow-sm brand-glow transition-all">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-5">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-bold shadow-sm">
+                2
+              </span>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 tracking-tight">Technical Identifiers</h2>
+                <p class="text-[11px] text-slate-400">Movable Ink PODs, Campaign Tracking IDs, and Category ID.</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
+              Routing
+            </span>
+          </div>
+
+          <div class="space-y-5">
+            
+            <!-- POD ID (Multi-Select) -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <span>⚙️</span> POD ID <span class="text-[10px] font-normal normal-case text-slate-400">(Pick one or more)</span>
+                </label>
+                <span class="text-[11px] text-slate-400 font-medium" id="pod-selected-count">1 selected</span>
+              </div>
+
+              <!-- Preset POD ID Pills -->
+              <div class="flex flex-wrap gap-2 mb-2.5" id="pod-pills-container">
+                <button type="button" class="btn-pod-pill px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold transition cursor-pointer" data-val="onus_email_mi_uf">
+                  onus_email_mi_uf
+                </button>
+                <button type="button" class="btn-pod-pill px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold transition cursor-pointer" data-val="onca_email_mi_en_uf">
+                  onca_email_mi_en_uf
+                </button>
+                <button type="button" class="btn-pod-pill px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold transition cursor-pointer" data-val="onca_email_mi_fr_uf">
+                  onca_email_mi_fr_uf
+                </button>
+              </div>
+
+              <!-- Custom POD ID chips container -->
+              <div id="custom-pod-chips" class="flex flex-wrap gap-1.5 empty:hidden mb-2"></div>
+
+              <!-- Add custom POD ID row -->
+              <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                  <input type="text" id="input-add-custom-pod" placeholder="Type custom POD ID and press Enter..." class="w-full text-xs font-mono bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition">
+                </div>
+                <button type="button" id="btn-add-custom-pod" class="px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer shrink-0">
+                  + Add POD
+                </button>
+              </div>
+            </div>
+
+            <!-- Grid: TID (Multi-Select) and CID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+              
+              <!-- TID (Multi-Select) -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <label class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <span>🔑</span> TID <span class="text-[10px] font-normal normal-case text-slate-400">(Multi-select)</span>
+                  </label>
+                  <span class="text-[11px] text-slate-400 font-medium" id="tid-selected-count">1 selected</span>
+                </div>
+
+                <!-- Preset TID Pills -->
+                <div class="flex flex-wrap gap-2 mb-2.5" id="tid-pills-container">
+                  <button type="button" class="btn-tid-pill px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold transition cursor-pointer" data-val="onem013383">
+                    onem013383
+                  </button>
+                  <button type="button" class="btn-tid-pill px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold transition cursor-pointer" data-val="ocem003398">
+                    ocem003398
+                  </button>
+                </div>
+
+                <!-- Custom TID chips -->
+                <div id="custom-tid-chips" class="flex flex-wrap gap-1.5 empty:hidden mb-2"></div>
+
+                <!-- Add custom TID row -->
+                <div class="flex items-center gap-2">
+                  <input type="text" id="input-add-custom-tid" placeholder="Type custom TID..." class="w-full text-xs font-mono bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition">
+                  <button type="button" id="btn-add-custom-tid" class="px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer shrink-0">
+                    + Add
+                  </button>
+                </div>
+              </div>
+
+              <!-- CID (No placeholder) -->
+              <div>
+                <div class="mb-2">
+                  <label for="field-cid" class="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <span>🆔</span> CID (Category ID)
+                  </label>
+                  <span class="text-[10px] text-slate-400">Constructor Category ID (not CustomerID)</span>
+                </div>
+                <input type="text" id="field-cid" class="w-full text-xs md:text-sm font-mono bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition shadow-inner">
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Card 3: Merchandising & Segment Rules (Y/N) -->
+        <div class="bg-white border border-slate-200/90 rounded-3xl p-5 md:p-6 shadow-sm brand-glow transition-all">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold shadow-sm">
+                3
+              </span>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 tracking-tight">Merchandising & Segment Rules</h2>
+                <p class="text-[11px] text-slate-400">Catalog filters, EV audience segmentation, and department locking.</p>
+              </div>
+            </div>
+            
+            <button type="button" id="btn-recs-all-no" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg transition cursor-pointer">
+              Set all N
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            
+            <!-- Recommend Sale Only? -->
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition">
+              <div>
+                <div class="text-xs font-bold text-slate-800">Sale Only?</div>
+                <div class="text-[10px] text-slate-400">Recommend Sale Only</div>
+              </div>
+              <div class="flex items-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="rec-sale">
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+              </div>
+            </div>
+
+            <!-- Recommend Promo Only? -->
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition">
+              <div>
+                <div class="text-xs font-bold text-slate-800">Promo Only?</div>
+                <div class="text-[10px] text-slate-400">Recommend Promo Only</div>
+              </div>
+              <div class="flex items-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="rec-promo">
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+              </div>
+            </div>
+
+            <!-- Recommend Clearance Only? -->
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition">
+              <div>
+                <div class="text-xs font-bold text-slate-800">Clearance Only?</div>
+                <div class="text-[10px] text-slate-400">Recommend Clearance</div>
+              </div>
+              <div class="flex items-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="rec-clearance">
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+              </div>
+            </div>
+
+            <!-- EV_Segment 1 Enabled? -->
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition">
+              <div>
+                <div class="text-xs font-bold text-slate-800">EV_Segment 1?</div>
+                <div class="text-[10px] text-slate-400">Enable Segment 1</div>
+              </div>
+              <div class="flex items-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="ev-segment">
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+              </div>
+            </div>
+
+            <!-- Department Lock Section (Active when EV_Segment 1 is N) -->
+            <div id="dept-lock-section" class="sm:col-span-2 space-y-3 pt-3 border-t border-slate-100 hidden">
+              
+              <!-- Department Lock Y/N Toggle -->
+              <div class="flex items-center justify-between p-3 rounded-2xl bg-indigo-50/60 border border-indigo-100 hover:border-indigo-200 transition">
+                <div>
+                  <div class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <span>🔒</span> Department Lock?
+                  </div>
+                  <div class="text-[10px] text-slate-400">Lock recommendations to specific department(s)</div>
+                </div>
+                <div class="flex items-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="dept-lock">
+                  <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                  <button type="button" class="btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+                </div>
+              </div>
+
+              <!-- Department Selector (Visible when Department Lock is Y) -->
+              <div id="dept-options-container" class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5 hidden">
+                <div class="flex items-center justify-between">
+                  <label class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <span>👕</span> Department Selection <span class="text-[10px] font-normal normal-case text-slate-400">(Multi-select)</span>
+                  </label>
+                  <div class="flex items-center gap-1.5 text-[11px] font-bold text-blue-600">
+                    <button type="button" id="btn-dept-all" class="hover:underline cursor-pointer">All</button>
+                    <span>•</span>
+                    <button type="button" id="btn-dept-adult" class="hover:underline cursor-pointer">W+M</button>
+                    <span>•</span>
+                    <button type="button" id="btn-dept-kids" class="hover:underline cursor-pointer">Kids/Baby</button>
+                    <span>•</span>
+                    <button type="button" id="btn-dept-clear" class="hover:underline text-slate-400 cursor-pointer">Clear</button>
+                  </div>
+                </div>
+
+                <!-- 8 Department Pills: W, M, G, B, TG, TB, BG, BB -->
+                <div class="grid grid-cols-4 sm:grid-cols-4 gap-2" id="dept-pills-container">
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="W">
+                    <span class="font-extrabold text-sm">W</span>
+                    <span class="text-[9px] font-normal text-slate-400">Women</span>
+                  </button>
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="M">
+                    <span class="font-extrabold text-sm">M</span>
+                    <span class="text-[9px] font-normal text-slate-400">Men</span>
+                  </button>
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="G">
+                    <span class="font-extrabold text-sm">G</span>
+                    <span class="text-[9px] font-normal text-slate-400">Girls</span>
+                  </button>
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="B">
+                    <span class="font-extrabold text-sm">B</span>
+                    <span class="text-[9px] font-normal text-slate-400">Boys</span>
+                  </button>
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="TG">
+                    <span class="font-extrabold text-sm">TG</span>
+                    <span class="text-[9px] font-normal text-slate-400">Toddler Girl</span>
+                  </button>
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="TB">
+                    <span class="font-extrabold text-sm">TB</span>
+                    <span class="text-[9px] font-normal text-slate-400">Toddler Boy</span>
+                  </button>
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="BG">
+                    <span class="font-extrabold text-sm">BG</span>
+                    <span class="text-[9px] font-normal text-slate-400">Baby Girl</span>
+                  </button>
+                  <button type="button" class="btn-dept-pill py-2 px-1 rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer" data-dept="BB">
+                    <span class="font-extrabold text-sm">BB</span>
+                    <span class="text-[9px] font-normal text-slate-400">Baby Boy</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Card 4: Tracking & Cache Stripping (Y/N) -->
+        <div class="bg-white border border-slate-200/90 rounded-3xl p-5 md:p-6 shadow-sm brand-glow transition-all">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold shadow-sm">
+                4
+              </span>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 tracking-tight">Security & Token Stripping</h2>
+                <p class="text-[11px] text-slate-400">Strip tracking IDs, Customer IDs, and cache tokens.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            
+            <!-- Remove trackingid -->
+            <div class="flex flex-col justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition">
+              <div class="mb-2">
+                <div class="text-xs font-bold text-slate-800">trackingid</div>
+                <div class="text-[10px] text-slate-400">Remove trackingid</div>
+              </div>
+              <div class="flex items-center justify-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="remove-tracking">
+                <button type="button" class="btn-yn flex-1 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                <button type="button" class="btn-yn flex-1 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+              </div>
+            </div>
+
+            <!-- Remove CustomerID -->
+            <div class="flex flex-col justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition">
+              <div class="mb-2">
+                <div class="text-xs font-bold text-slate-800">CustomerID</div>
+                <div class="text-[10px] text-slate-400">Remove CustomerID</div>
+              </div>
+              <div class="flex items-center justify-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="remove-customerid">
+                <button type="button" class="btn-yn flex-1 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                <button type="button" class="btn-yn flex-1 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+              </div>
+            </div>
+
+            <!-- Remove Cache Token -->
+            <div class="flex flex-col justify-between p-3 rounded-2xl bg-slate-50/90 border border-slate-200/80 hover:border-slate-300 transition">
+              <div class="mb-2">
+                <div class="text-xs font-bold text-slate-800">Cache Token</div>
+                <div class="text-[10px] text-slate-400">Remove Cache Token</div>
+              </div>
+              <div class="flex items-center justify-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-xs" data-toggle="remove-cache">
+                <button type="button" class="btn-yn flex-1 py-1 text-xs font-black rounded-lg transition cursor-pointer" data-val="Y">Y</button>
+                <button type="button" class="btn-yn flex-1 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n" data-val="N">N</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-sm">
+          <label for="field-notes" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+            <span>📝</span> Special Instructions / Drop Schedule
+          </label>
+          <textarea id="field-notes" rows="2" placeholder="e.g. Schedule deployment for Tuesday 6 AM EST drop. Please verify inventory feed before publish." class="w-full text-xs md:text-sm bg-slate-50/70 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl p-3 text-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition shadow-inner"></textarea>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Interactive Mock Email Client & Copy Center -->
+      <section class="lg:col-span-6 space-y-4 lg:sticky lg:top-6">
+        
+        <!-- Action Control Header -->
+        <div class="bg-white border border-slate-200/90 rounded-3xl p-3.5 shadow-sm brand-glow flex flex-wrap items-center justify-between gap-3">
+          
+          <!-- Copy Actions -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Big Hero Copy Body Button -->
+            <button id="btn-copy-body" type="button" class="group relative px-5 py-2.5 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 active:scale-95 text-white font-bold text-xs md:text-sm rounded-2xl shadow-md shadow-blue-500/25 transition-all flex items-center gap-2 cursor-pointer">
+              <span class="text-base group-hover:scale-110 transition-transform">📋</span>
+              <span>Copy Email Body</span>
+              <span class="text-[10px] bg-white/20 font-mono px-2 py-0.5 rounded-full uppercase tracking-wider">Rich Text</span>
+            </button>
+
+            <!-- Copy Subject Line -->
+            <button id="btn-copy-subject" type="button" class="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold text-xs md:text-sm rounded-2xl transition flex items-center gap-1.5 cursor-pointer">
+              <span>🏷️</span>
+              <span>Subject</span>
+            </button>
+
+            <!-- Copy Both -->
+            <button id="btn-copy-all" type="button" class="px-3.5 py-2.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-bold text-xs rounded-2xl transition cursor-pointer">
+              Copy Both
+            </button>
+          </div>
+
+          <!-- Output Style Tabs -->
+          <div class="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold">
+            <button type="button" id="btn-style-list" class="px-3 py-1.5 rounded-xl bg-white text-blue-700 shadow-xs transition cursor-pointer">
+              Bullet List
+            </button>
+            <button type="button" id="btn-style-table" class="px-3 py-1.5 rounded-xl text-slate-500 hover:text-slate-800 transition cursor-pointer">
+              Table Grid
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Mock Email App Window -->
+        <div class="bg-white border border-slate-200/90 rounded-3xl shadow-xl shadow-slate-200/50 overflow-hidden">
+          
+          <!-- macOS Style Window Header -->
+          <div class="bg-slate-100/80 border-b border-slate-200 px-5 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-rose-400/90 border border-rose-500/30"></div>
+              <div class="w-3 h-3 rounded-full bg-amber-400/90 border border-amber-500/30"></div>
+              <div class="w-3 h-3 rounded-full bg-emerald-400/90 border border-emerald-500/30"></div>
+              <span class="ml-2 text-xs font-bold text-slate-600 font-sans">New Message — Deployment Ticket</span>
+            </div>
+            
+            <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span id="preview-timestamp">Today</span>
+            </div>
+          </div>
+
+          <!-- Email Envelope Headers (To, From, Subject) -->
+          <div class="bg-slate-50/70 border-b border-slate-200/80 px-5 py-4 space-y-2.5 text-xs font-sans">
+            
+            <!-- To field -->
+            <div class="flex items-center gap-3">
+              <span class="w-16 font-bold uppercase tracking-wider text-slate-400">To:</span>
+              <span class="font-medium text-slate-700 bg-white border border-slate-200 px-2.5 py-0.5 rounded-lg shadow-2xs">
+                ✉️ Email Deployment & QA Team &lt;emailops@gapinc.com&gt;
+              </span>
+            </div>
+
+            <!-- Subject Line with Quick Click-to-Copy -->
+            <div class="flex items-start gap-3 pt-1">
+              <span class="w-16 font-bold uppercase tracking-wider text-slate-400 pt-0.5">Subject:</span>
+              <div class="flex-1 flex items-center justify-between gap-2 bg-blue-50/60 border border-blue-200/60 rounded-xl px-3 py-1.5">
+                <span id="preview-subject" class="font-bold text-slate-900 text-xs md:text-sm break-all font-mono">
+                  <!-- Injected by JS -->
+                </span>
+                <button type="button" id="btn-quick-copy-subject" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 shrink-0 uppercase tracking-wider cursor-pointer" title="Copy subject line only">
+                  Copy
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Email Content Body -->
+          <div class="p-6 md:p-7 min-h-[360px] bg-white">
+            <div id="preview-body" class="text-xs md:text-sm leading-relaxed text-slate-800 font-sans select-text">
+              <!-- Rendered template body -->
+            </div>
+          </div>
+
+          <!-- Email Footer Stats Bar -->
+          <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+              <span id="preview-summary-chip" class="font-medium text-slate-600">Old Navy • US • 8 items</span>
+            </div>
+            <span class="font-mono text-[11px] text-slate-400">Ready to paste into Outlook or Gmail</span>
+          </div>
+
+        </div>
+
+        <!-- Pro-tip Card -->
+        <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/60 flex items-start gap-3">
+          <span class="text-xl">💡</span>
+          <div class="text-xs text-amber-900/90 leading-relaxed">
+            <strong class="font-bold text-amber-950">Clipboard Tip:</strong> Clicking <strong>Copy Email Body</strong> writes rich HTML and plain text simultaneously. When pasted into Outlook or Gmail, formatting, badges, and tables are preserved perfectly!
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Floating Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+      <div class="toast-animate bg-slate-900/95 backdrop-blur-md text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700">
+        <div id="toast-icon-bg" class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+          ✓
+        </div>
+        <div>
+          <div id="toast-title" class="text-xs font-bold text-slate-200">Success!</div>
+          <div id="toast-message" class="text-xs text-slate-400 font-medium">Copied to clipboard!</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State management supporting Multi-Select for Market, Language, POD ID, TID, and Department Lock
+    const state = {
+      requester: '',
+      totalItems: '8',
+      brand: 'Old Navy',
+      markets: ['US'], // ['US', 'CDA-EN', 'CDA-FR']
+      languages: ['US'], // ['US', 'CDA-EN', 'CDA-FR']
+      podIds: ['onus_email_mi_uf'], // preset and custom POD IDs
+      customPodIds: [],
+      tids: ['onem013383'], // preset and custom TIDs
+      customTids: [],
+      cid: '',
+      recSale: 'N',
+      recPromo: 'N',
+      recClearance: 'N',
+      evSegment: 'N', // Y | N
+      deptLock: 'N', // Y | N (only active when evSegment === 'N')
+      departments: ['W'], // W, M, G, B, TG, TB, BG, BB
+      removeTracking: 'N',
+      removeCustomerId: 'N',
+      removeCache: 'N',
+      notes: '',
+      viewStyle: 'list' // 'list' | 'table'
+    };
+
+    // DOM Elements
+    const fieldRequester = document.getElementById('field-requester');
+    const fieldBrand = document.getElementById('field-brand');
+    const btnItems8 = document.getElementById('btn-items-8');
+    const btnItems16 = document.getElementById('btn-items-16');
+
+    // Market & Language controls
+    const marketPillsContainer = document.getElementById('market-pills-container');
+    const btnMarketAll = document.getElementById('btn-market-all');
+    const btnMarketUs = document.getElementById('btn-market-us');
+    const btnMarketCa = document.getElementById('btn-market-ca');
+    const langPillsContainer = document.getElementById('lang-pills-container');
+    const btnLangMatchMarket = document.getElementById('btn-lang-match-market');
+
+    // POD ID controls
+    const podPillsContainer = document.getElementById('pod-pills-container');
+    const customPodChips = document.getElementById('custom-pod-chips');
+    const inputAddCustomPod = document.getElementById('input-add-custom-pod');
+    const btnAddCustomPod = document.getElementById('btn-add-custom-pod');
+    const podSelectedCount = document.getElementById('pod-selected-count');
+
+    // TID controls
+    const tidPillsContainer = document.getElementById('tid-pills-container');
+    const customTidChips = document.getElementById('custom-tid-chips');
+    const inputAddCustomTid = document.getElementById('input-add-custom-tid');
+    const btnAddCustomTid = document.getElementById('btn-add-custom-tid');
+    const tidSelectedCount = document.getElementById('tid-selected-count');
+
+    // CID & Notes
+    const fieldCid = document.getElementById('field-cid');
+    const fieldNotes = document.getElementById('field-notes');
+
+    // Department Lock controls
+    const deptLockSection = document.getElementById('dept-lock-section');
+    const deptOptionsContainer = document.getElementById('dept-options-container');
+    const deptPillsContainer = document.getElementById('dept-pills-container');
+    const btnDeptAll = document.getElementById('btn-dept-all');
+    const btnDeptAdult = document.getElementById('btn-dept-adult');
+    const btnDeptKids = document.getElementById('btn-dept-kids');
+    const btnDeptClear = document.getElementById('btn-dept-clear');
+
+    // Preview
+    const previewSubject = document.getElementById('preview-subject');
+    const previewBody = document.getElementById('preview-body');
+    const previewSummaryChip = document.getElementById('preview-summary-chip');
+    const previewTimestamp = document.getElementById('preview-timestamp');
+
+    // Buttons
+    const btnCopyBody = document.getElementById('btn-copy-body');
+    const btnCopySubject = document.getElementById('btn-copy-subject');
+    const btnQuickCopySubject = document.getElementById('btn-quick-copy-subject');
+    const btnCopyAll = document.getElementById('btn-copy-all');
+    const btnReset = document.getElementById('btn-reset');
+    const btnRecsAllNo = document.getElementById('btn-recs-all-no');
+    const btnStyleList = document.getElementById('btn-style-list');
+    const btnStyleTable = document.getElementById('btn-style-table');
+
+    // Presets
+    const presetBau = document.getElementById('preset-bau');
+    const presetUsOnly = document.getElementById('preset-us-only');
+    const presetCdaOnly = document.getElementById('preset-cda-only');
+
+    // Toast
+    const toast = document.getElementById('toast');
+    const toastTitle = document.getElementById('toast-title');
+    const toastMessage = document.getElementById('toast-message');
+    const toastIconBg = document.getElementById('toast-icon-bg');
+    let toastTimeout = null;
+
+    // --- Init ---
+    function init() {
+      loadState();
+      syncFormFromState();
+      setupEventListeners();
+      updatePreview();
+
+      if (previewTimestamp) {
+        previewTimestamp.textContent = new Date().toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+    }
+
+    // --- Persistence ---
+    function saveState() {
+      try {
+        localStorage.setItem('on_email_studio_state', JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('on_email_studio_state');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          
+          // Migrate legacy single-string properties if found
+          if (parsed.market && typeof parsed.market === 'string') {
+            parsed.markets = [parsed.market];
+            delete parsed.market;
+          }
+          if (parsed.language && typeof parsed.language === 'string') {
+            parsed.languages = [parsed.language];
+            delete parsed.language;
+          }
+          if (parsed.podId && typeof parsed.podId === 'string') {
+            parsed.podIds = [parsed.podId];
+            delete parsed.podId;
+          }
+          if (parsed.tid && typeof parsed.tid === 'string') {
+            parsed.tids = [parsed.tid];
+            delete parsed.tid;
+          }
+
+          // Ensure arrays are preserved
+          if (!Array.isArray(parsed.markets)) parsed.markets = ['US'];
+          if (!Array.isArray(parsed.languages)) parsed.languages = ['US'];
+          if (!Array.isArray(parsed.podIds)) parsed.podIds = ['onus_email_mi_uf'];
+          if (!Array.isArray(parsed.customPodIds)) parsed.customPodIds = [];
+          if (!Array.isArray(parsed.tids)) parsed.tids = ['onem013383'];
+          if (!Array.isArray(parsed.customTids)) parsed.customTids = [];
+          if (!parsed.deptLock) parsed.deptLock = 'N';
+          if (!Array.isArray(parsed.departments)) parsed.departments = ['W'];
+
+          Object.assign(state, parsed);
+        }
+      } catch (e) {}
+    }
+
+    // --- Sync Form UI from State ---
+    function syncFormFromState() {
+      if (fieldRequester) fieldRequester.value = state.requester || '';
+      if (fieldBrand) fieldBrand.value = state.brand || 'Old Navy';
+      if (fieldCid) fieldCid.value = state.cid || '';
+      if (fieldNotes) fieldNotes.value = state.notes || '';
+
+      updateTotalItemsButtons();
+      renderMarketPills();
+      renderLangPills();
+      renderPodPills();
+      renderTidPills();
+      renderDeptPills();
+      renderAllToggles();
+      syncDeptLockVisibility();
+      renderStyleButtons();
+    }
+
+    function updateTotalItemsButtons() {
+      if (state.totalItems === '16') {
+        btnItems16.className = 'btn-items-choice py-2.5 px-4 rounded-xl border-2 font-bold text-xs md:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-blue-600 bg-blue-50/70 text-blue-700 shadow-sm';
+        btnItems16.querySelector('span').className = 'w-2.5 h-2.5 rounded-full bg-blue-600';
+
+        btnItems8.className = 'btn-items-choice py-2.5 px-4 rounded-xl border-2 font-bold text-xs md:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50';
+        btnItems8.querySelector('span').className = 'w-2.5 h-2.5 rounded-full bg-slate-300';
+      } else {
+        btnItems8.className = 'btn-items-choice py-2.5 px-4 rounded-xl border-2 font-bold text-xs md:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-blue-600 bg-blue-50/70 text-blue-700 shadow-sm';
+        btnItems8.querySelector('span').className = 'w-2.5 h-2.5 rounded-full bg-blue-600';
+
+        btnItems16.className = 'btn-items-choice py-2.5 px-4 rounded-xl border-2 font-bold text-xs md:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50';
+        btnItems16.querySelector('span').className = 'w-2.5 h-2.5 rounded-full bg-slate-300';
+      }
+    }
+
+    // --- Department Lock Visibility & Controls ---
+    function syncDeptLockVisibility() {
+      if (state.evSegment === 'N') {
+        if (deptLockSection) deptLockSection.classList.remove('hidden');
+        if (state.deptLock === 'Y') {
+          if (deptOptionsContainer) deptOptionsContainer.classList.remove('hidden');
+        } else {
+          if (deptOptionsContainer) deptOptionsContainer.classList.add('hidden');
+        }
+      } else {
+        if (deptLockSection) deptLockSection.classList.add('hidden');
+        if (deptOptionsContainer) deptOptionsContainer.classList.add('hidden');
+      }
+    }
+
+    function renderDeptPills() {
+      if (!deptPillsContainer) return;
+      const pills = deptPillsContainer.querySelectorAll('.btn-dept-pill');
+      pills.forEach(btn => {
+        const dept = btn.getAttribute('data-dept');
+        const isSelected = state.departments && state.departments.includes(dept);
+        if (isSelected) {
+          btn.className = 'btn-dept-pill py-2 px-1 rounded-xl border-2 text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer border-indigo-600 bg-indigo-50/90 text-indigo-900 shadow-xs ring-1 ring-indigo-500/20';
+        } else {
+          btn.className = 'btn-dept-pill py-2 px-1 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer';
+        }
+      });
+    }
+
+    function toggleDepartment(dept) {
+      if (!Array.isArray(state.departments)) state.departments = [];
+      if (state.departments.includes(dept)) {
+        state.departments = state.departments.filter(d => d !== dept);
+      } else {
+        state.departments.push(dept);
+      }
+      renderDeptPills();
+      saveState();
+      updatePreview();
+    }
+
+    // --- Multi-Select Renderers ---
+    function renderMarketPills() {
+      if (!marketPillsContainer) return;
+      const pills = marketPillsContainer.querySelectorAll('.btn-market-pill');
+      pills.forEach(btn => {
+        const val = btn.getAttribute('data-val');
+        const isSelected = state.markets.includes(val);
+        if (isSelected) {
+          btn.className = 'btn-market-pill py-2.5 px-2 rounded-xl border-2 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border-blue-600 bg-blue-50/90 text-blue-800 shadow-xs ring-1 ring-blue-500/20';
+        } else {
+          btn.className = 'btn-market-pill py-2.5 px-2 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer';
+        }
+      });
+    }
+
+    function renderLangPills() {
+      if (!langPillsContainer) return;
+      const pills = langPillsContainer.querySelectorAll('.btn-lang-pill');
+      pills.forEach(btn => {
+        const val = btn.getAttribute('data-val');
+        const isSelected = state.languages.includes(val);
+        if (isSelected) {
+          btn.className = 'btn-lang-pill py-2.5 px-2 rounded-xl border-2 text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer border-blue-600 bg-blue-50/90 text-blue-800 shadow-xs ring-1 ring-blue-500/20';
+        } else {
+          btn.className = 'btn-lang-pill py-2.5 px-2 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer';
+        }
+      });
+    }
+
+    function renderPodPills() {
+      if (!podPillsContainer) return;
+      const pills = podPillsContainer.querySelectorAll('.btn-pod-pill');
+      pills.forEach(btn => {
+        const val = btn.getAttribute('data-val');
+        const isSelected = state.podIds.includes(val);
+        if (isSelected) {
+          btn.className = 'btn-pod-pill px-3 py-1.5 rounded-xl border-2 text-xs font-mono font-bold transition cursor-pointer border-indigo-600 bg-indigo-50/90 text-indigo-900 shadow-xs ring-1 ring-indigo-500/20';
+        } else {
+          btn.className = 'btn-pod-pill px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 text-xs font-mono font-medium transition cursor-pointer';
+        }
+      });
+
+      // Render custom POD chips
+      if (customPodChips) {
+        customPodChips.innerHTML = '';
+        state.customPodIds.forEach(val => {
+          const isSelected = state.podIds.includes(val);
+          const chip = document.createElement('div');
+          chip.className = `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-mono transition shadow-2xs select-none ${
+            isSelected 
+              ? 'bg-indigo-100 text-indigo-900 border border-indigo-300 font-bold' 
+              : 'bg-slate-100 text-slate-400 border border-slate-200 line-through'
+          }`;
+          
+          chip.innerHTML = `
+            <span class="cursor-pointer font-mono" title="Click to toggle">${val}</span>
+            <button type="button" class="ml-1 text-slate-400 hover:text-rose-600 font-bold leading-none cursor-pointer text-sm" title="Delete custom POD ID">&times;</button>
+          `;
+          
+          chip.querySelector('span').addEventListener('click', () => {
+            togglePod(val);
+          });
+
+          chip.querySelector('button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeCustomPod(val);
+          });
+
+          customPodChips.appendChild(chip);
+        });
+      }
+
+      const count = state.podIds.length;
+      if (podSelectedCount) {
+        podSelectedCount.textContent = count === 0 ? 'None selected' : `${count} selected`;
+      }
+    }
+
+    function renderTidPills() {
+      if (!tidPillsContainer) return;
+      const pills = tidPillsContainer.querySelectorAll('.btn-tid-pill');
+      pills.forEach(btn => {
+        const val = btn.getAttribute('data-val');
+        const isSelected = state.tids.includes(val);
+        if (isSelected) {
+          btn.className = 'btn-tid-pill px-3 py-1.5 rounded-xl border-2 text-xs font-mono font-bold transition cursor-pointer border-indigo-600 bg-indigo-50/90 text-indigo-900 shadow-xs ring-1 ring-indigo-500/20';
+        } else {
+          btn.className = 'btn-tid-pill px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 text-xs font-mono font-medium transition cursor-pointer';
+        }
+      });
+
+      // Render custom TID chips
+      if (customTidChips) {
+        customTidChips.innerHTML = '';
+        state.customTids.forEach(val => {
+          const isSelected = state.tids.includes(val);
+          const chip = document.createElement('div');
+          chip.className = `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-mono transition shadow-2xs select-none ${
+            isSelected 
+              ? 'bg-indigo-100 text-indigo-900 border border-indigo-300 font-bold' 
+              : 'bg-slate-100 text-slate-400 border border-slate-200 line-through'
+          }`;
+          
+          chip.innerHTML = `
+            <span class="cursor-pointer font-mono" title="Click to toggle">${val}</span>
+            <button type="button" class="ml-1 text-slate-400 hover:text-rose-600 font-bold leading-none cursor-pointer text-sm" title="Delete custom TID">&times;</button>
+          `;
+          
+          chip.querySelector('span').addEventListener('click', () => {
+            toggleTid(val);
+          });
+
+          chip.querySelector('button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeCustomTid(val);
+          });
+
+          customTidChips.appendChild(chip);
+        });
+      }
+
+      const count = state.tids.length;
+      if (tidSelectedCount) {
+        tidSelectedCount.textContent = count === 0 ? 'None selected' : `${count} selected`;
+      }
+    }
+
+    // --- Multi-Select Toggle Actions ---
+    function toggleMarket(val) {
+      if (state.markets.includes(val)) {
+        state.markets = state.markets.filter(x => x !== val);
+      } else {
+        state.markets.push(val);
+      }
+      renderMarketPills();
+      saveState();
+      updatePreview();
+    }
+
+    function toggleLanguage(val) {
+      if (state.languages.includes(val)) {
+        state.languages = state.languages.filter(x => x !== val);
+      } else {
+        state.languages.push(val);
+      }
+      renderLangPills();
+      saveState();
+      updatePreview();
+    }
+
+    function togglePod(val) {
+      if (state.podIds.includes(val)) {
+        state.podIds = state.podIds.filter(x => x !== val);
+      } else {
+        state.podIds.push(val);
+      }
+      renderPodPills();
+      saveState();
+      updatePreview();
+    }
+
+    function addCustomPod() {
+      const val = inputAddCustomPod.value.trim();
+      if (!val) return;
+      if (!state.customPodIds.includes(val)) {
+        state.customPodIds.push(val);
+      }
+      if (!state.podIds.includes(val)) {
+        state.podIds.push(val);
+      }
+      inputAddCustomPod.value = '';
+      renderPodPills();
+      saveState();
+      updatePreview();
+      showToast('Added POD ID', val);
+    }
+
+    function removeCustomPod(val) {
+      state.customPodIds = state.customPodIds.filter(x => x !== val);
+      state.podIds = state.podIds.filter(x => x !== val);
+      renderPodPills();
+      saveState();
+      updatePreview();
+    }
+
+    function toggleTid(val) {
+      if (state.tids.includes(val)) {
+        state.tids = state.tids.filter(x => x !== val);
+      } else {
+        state.tids.push(val);
+      }
+      renderTidPills();
+      saveState();
+      updatePreview();
+    }
+
+    function addCustomTid() {
+      const val = inputAddCustomTid.value.trim();
+      if (!val) return;
+      if (!state.customTids.includes(val)) {
+        state.customTids.push(val);
+      }
+      if (!state.tids.includes(val)) {
+        state.tids.push(val);
+      }
+      inputAddCustomTid.value = '';
+      renderTidPills();
+      saveState();
+      updatePreview();
+      showToast('Added TID', val);
+    }
+
+    function removeCustomTid(val) {
+      state.customTids = state.customTids.filter(x => x !== val);
+      state.tids = state.tids.filter(x => x !== val);
+      renderTidPills();
+      saveState();
+      updatePreview();
+    }
+
+    // --- Y/N Toggles Renderer ---
+    function renderToggle(containerSelector, value) {
+      const container = document.querySelector(`[data-toggle="${containerSelector}"]`);
+      if (!container) return;
+      const buttons = container.querySelectorAll('.btn-yn');
+      buttons.forEach(btn => {
+        const val = btn.getAttribute('data-val');
+        if (val === value) {
+          btn.className = val === 'Y'
+            ? 'btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-y'
+            : 'btn-yn px-3 py-1 text-xs font-black rounded-lg transition cursor-pointer yn-pill-active-n';
+        } else {
+          btn.className = 'btn-yn px-3 py-1 text-xs font-bold rounded-lg transition cursor-pointer text-slate-400 hover:text-slate-600 hover:bg-slate-50';
+        }
+      });
+    }
+
+    function renderAllToggles() {
+      renderToggle('rec-sale', state.recSale);
+      renderToggle('rec-promo', state.recPromo);
+      renderToggle('rec-clearance', state.recClearance);
+      renderToggle('ev-segment', state.evSegment);
+      renderToggle('dept-lock', state.deptLock);
+      renderToggle('remove-tracking', state.removeTracking);
+      renderToggle('remove-customerid', state.removeCustomerId);
+      renderToggle('remove-cache', state.removeCache);
+    }
+
+    function renderStyleButtons() {
+      if (!btnStyleTable || !btnStyleList) return;
+      if (state.viewStyle === 'table') {
+        btnStyleTable.className = 'px-3 py-1.5 rounded-xl bg-white text-blue-700 shadow-xs transition cursor-pointer';
+        btnStyleList.className = 'px-3 py-1.5 rounded-xl text-slate-500 hover:text-slate-800 transition cursor-pointer';
+      } else {
+        btnStyleList.className = 'px-3 py-1.5 rounded-xl bg-white text-blue-700 shadow-xs transition cursor-pointer';
+        btnStyleTable.className = 'px-3 py-1.5 rounded-xl text-slate-500 hover:text-slate-800 transition cursor-pointer';
+      }
+    }
+
+    // --- Event Listeners Setup ---
+    function setupEventListeners() {
+      if (fieldRequester) {
+        fieldRequester.addEventListener('input', (e) => {
+          state.requester = e.target.value;
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (fieldBrand) {
+        fieldBrand.addEventListener('input', (e) => {
+          state.brand = e.target.value;
+          saveState();
+          updatePreview();
+        });
+      }
+
+      // Total Items segmented buttons
+      if (btnItems8) {
+        btnItems8.addEventListener('click', () => {
+          state.totalItems = '8';
+          updateTotalItemsButtons();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (btnItems16) {
+        btnItems16.addEventListener('click', () => {
+          state.totalItems = '16';
+          updateTotalItemsButtons();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      // Market pill clicks
+      if (marketPillsContainer) {
+        marketPillsContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('.btn-market-pill');
+          if (!btn) return;
+          const val = btn.getAttribute('data-val');
+          toggleMarket(val);
+        });
+      }
+
+      // Quick Market buttons
+      if (btnMarketAll) {
+        btnMarketAll.addEventListener('click', () => {
+          state.markets = ['US', 'CDA-EN', 'CDA-FR'];
+          renderMarketPills();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (btnMarketUs) {
+        btnMarketUs.addEventListener('click', () => {
+          state.markets = ['US'];
+          renderMarketPills();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (btnMarketCa) {
+        btnMarketCa.addEventListener('click', () => {
+          state.markets = ['CDA-EN', 'CDA-FR'];
+          renderMarketPills();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      // Language pill clicks
+      if (langPillsContainer) {
+        langPillsContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('.btn-lang-pill');
+          if (!btn) return;
+          const val = btn.getAttribute('data-val');
+          toggleLanguage(val);
+        });
+      }
+
+      // Sync Language with Market
+      if (btnLangMatchMarket) {
+        btnLangMatchMarket.addEventListener('click', () => {
+          state.languages = [...state.markets];
+          renderLangPills();
+          saveState();
+          updatePreview();
+          showToast('Synced Languages', `Set to: ${state.languages.join(', ') || 'None'}`);
+        });
+      }
+
+      // POD ID pill clicks
+      if (podPillsContainer) {
+        podPillsContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('.btn-pod-pill');
+          if (!btn) return;
+          const val = btn.getAttribute('data-val');
+          togglePod(val);
+        });
+      }
+
+      // Add custom POD ID
+      if (btnAddCustomPod) {
+        btnAddCustomPod.addEventListener('click', addCustomPod);
+      }
+      if (inputAddCustomPod) {
+        inputAddCustomPod.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            addCustomPod();
+          }
+        });
+      }
+
+      // TID pill clicks
+      if (tidPillsContainer) {
+        tidPillsContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('.btn-tid-pill');
+          if (!btn) return;
+          const val = btn.getAttribute('data-val');
+          toggleTid(val);
+        });
+      }
+
+      // Add custom TID
+      if (btnAddCustomTid) {
+        btnAddCustomTid.addEventListener('click', addCustomTid);
+      }
+      if (inputAddCustomTid) {
+        inputAddCustomTid.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            addCustomTid();
+          }
+        });
+      }
+
+      // Department Pills Click
+      if (deptPillsContainer) {
+        deptPillsContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('.btn-dept-pill');
+          if (!btn) return;
+          const dept = btn.getAttribute('data-dept');
+          toggleDepartment(dept);
+        });
+      }
+
+      // Department Quick Selectors
+      if (btnDeptAll) {
+        btnDeptAll.addEventListener('click', () => {
+          state.departments = ['W', 'M', 'G', 'B', 'TG', 'TB', 'BG', 'BB'];
+          renderDeptPills();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (btnDeptAdult) {
+        btnDeptAdult.addEventListener('click', () => {
+          state.departments = ['W', 'M'];
+          renderDeptPills();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (btnDeptKids) {
+        btnDeptKids.addEventListener('click', () => {
+          state.departments = ['G', 'B', 'TG', 'TB', 'BG', 'BB'];
+          renderDeptPills();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (btnDeptClear) {
+        btnDeptClear.addEventListener('click', () => {
+          state.departments = [];
+          renderDeptPills();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      // CID & Notes
+      if (fieldCid) {
+        fieldCid.addEventListener('input', (e) => {
+          state.cid = e.target.value;
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (fieldNotes) {
+        fieldNotes.addEventListener('input', (e) => {
+          state.notes = e.target.value;
+          saveState();
+          updatePreview();
+        });
+      }
+
+      // Y/N Toggles
+      setupToggleListener('rec-sale', 'recSale');
+      setupToggleListener('rec-promo', 'recPromo');
+      setupToggleListener('rec-clearance', 'recClearance');
+      setupToggleListener('ev-segment', 'evSegment', (val) => {
+        syncDeptLockVisibility();
+        if (val === 'Y') {
+          // If EV_Segment is Y, Department Lock is inactive
+          state.deptLock = 'N';
+          renderToggle('dept-lock', 'N');
+        }
+      });
+      setupToggleListener('dept-lock', 'deptLock', (val) => {
+        syncDeptLockVisibility();
+        if (val === 'Y' && (!state.departments || state.departments.length === 0)) {
+          state.departments = ['W'];
+          renderDeptPills();
+        }
+      });
+      setupToggleListener('remove-tracking', 'removeTracking');
+      setupToggleListener('remove-customerid', 'removeCustomerId');
+      setupToggleListener('remove-cache', 'removeCache');
+
+      // Set All Recs to N
+      if (btnRecsAllNo) {
+        btnRecsAllNo.addEventListener('click', () => {
+          state.recSale = 'N';
+          state.recPromo = 'N';
+          state.recClearance = 'N';
+          state.evSegment = 'N';
+          state.deptLock = 'N';
+          state.departments = [];
+          renderAllToggles();
+          syncDeptLockVisibility();
+          saveState();
+          updatePreview();
+          showToast('Rule filters reset to N', 'All flags set to No');
+        });
+      }
+
+      // Style View Toggles
+      if (btnStyleList) {
+        btnStyleList.addEventListener('click', () => {
+          state.viewStyle = 'list';
+          renderStyleButtons();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      if (btnStyleTable) {
+        btnStyleTable.addEventListener('click', () => {
+          state.viewStyle = 'table';
+          renderStyleButtons();
+          saveState();
+          updatePreview();
+        });
+      }
+
+      // --- Brand Presets ---
+      // 1. BAU Preset
+      if (presetBau) {
+        presetBau.addEventListener('click', () => {
+          state.brand = 'Old Navy';
+          state.markets = ['US', 'CDA-EN', 'CDA-FR'];
+          state.languages = ['US', 'CDA-EN', 'CDA-FR'];
+          state.podIds = ['onus_email_mi_uf', 'onca_email_mi_en_uf', 'onca_email_mi_fr_uf'];
+          state.customPodIds = [];
+          state.tids = ['onem013383', 'ocem003398'];
+          state.customTids = [];
+          state.cid = '';
+          state.recSale = 'N';
+          state.recPromo = 'N';
+          state.recClearance = 'N';
+          state.evSegment = 'Y';
+          state.deptLock = 'N';
+          state.departments = [];
+          state.removeTracking = 'Y';
+          state.removeCustomerId = 'N';
+          state.removeCache = 'Y';
+          state.notes = '';
+
+          syncFormFromState();
+          saveState();
+          updatePreview();
+          showToast('Loaded BAU Preset', 'All markets, languages, PODs & TIDs | EV_Segment 1 = Y | Tracking & Cache = Y');
+        });
+      }
+
+      // 2. US Only Preset
+      if (presetUsOnly) {
+        presetUsOnly.addEventListener('click', () => {
+          state.brand = 'Old Navy';
+          state.markets = ['US'];
+          state.languages = ['US'];
+          state.podIds = ['onus_email_mi_uf'];
+          state.customPodIds = [];
+          state.tids = ['onem013383'];
+          state.customTids = [];
+          state.cid = '';
+          state.recSale = 'N';
+          state.recPromo = 'N';
+          state.recClearance = 'N';
+          state.evSegment = 'Y';
+          state.deptLock = 'N';
+          state.departments = [];
+          state.removeTracking = 'Y';
+          state.removeCustomerId = 'N';
+          state.removeCache = 'Y';
+          state.notes = '';
+
+          syncFormFromState();
+          saveState();
+          updatePreview();
+          showToast('Loaded US Only Preset', 'US market, language, onus POD & onem TID | EV_Segment 1 = Y');
+        });
+      }
+
+      // 3. CDA Only Preset
+      if (presetCdaOnly) {
+        presetCdaOnly.addEventListener('click', () => {
+          state.brand = 'Old Navy';
+          state.markets = ['CDA-EN', 'CDA-FR'];
+          state.languages = ['CDA-EN', 'CDA-FR'];
+          state.podIds = ['onca_email_mi_en_uf', 'onca_email_mi_fr_uf'];
+          state.customPodIds = [];
+          state.tids = ['ocem003398'];
+          state.customTids = [];
+          state.cid = '';
+          state.recSale = 'N';
+          state.recPromo = 'N';
+          state.recClearance = 'N';
+          state.evSegment = 'Y';
+          state.deptLock = 'N';
+          state.departments = [];
+          state.removeTracking = 'Y';
+          state.removeCustomerId = 'N';
+          state.removeCache = 'Y';
+          state.notes = '';
+
+          syncFormFromState();
+          saveState();
+          updatePreview();
+          showToast('Loaded CDA Only Preset', 'CDA-EN + CDA-FR markets/languages, onca PODs & ocem TID');
+        });
+      }
+
+      // Reset
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          if (confirm('Reset all parameters to default values?')) {
+            state.requester = '';
+            state.brand = 'Old Navy';
+            state.markets = ['US'];
+            state.languages = ['US'];
+            state.totalItems = '8';
+            state.podIds = ['onus_email_mi_uf'];
+            state.customPodIds = [];
+            state.tids = ['onem013383'];
+            state.customTids = [];
+            state.cid = '';
+            state.recSale = 'N';
+            state.recPromo = 'N';
+            state.recClearance = 'N';
+            state.evSegment = 'N';
+            state.deptLock = 'N';
+            state.departments = ['W'];
+            state.removeTracking = 'N';
+            state.removeCustomerId = 'N';
+            state.removeCache = 'N';
+            state.notes = '';
+
+            syncFormFromState();
+            saveState();
+            updatePreview();
+            showToast('Form Reset', 'All values restored to default');
+          }
+        });
+      }
+
+      // Copy Body
+      if (btnCopyBody) {
+        btnCopyBody.addEventListener('click', async () => {
+          const plainText = generatePlainText();
+          const richHtml = generateRichHtml();
+          const success = await copyToClipboard(plainText, true, richHtml);
+          if (success) {
+            triggerConfetti();
+            showToast('Copied Email Body!', 'Rich HTML + plain text copied. Ready to paste into email!');
+          } else {
+            showToast('Failed to copy', 'Please select and copy text manually', false);
+          }
+        });
+      }
+
+      // Copy Subject
+      if (btnCopySubject) {
+        btnCopySubject.addEventListener('click', async () => {
+          const subjectText = generateSubject();
+          const success = await copyToClipboard(subjectText);
+          if (success) {
+            showToast('Copied Subject Line!', subjectText);
+          }
+        });
+      }
+
+      if (btnQuickCopySubject) {
+        btnQuickCopySubject.addEventListener('click', async () => {
+          const subjectText = generateSubject();
+          const success = await copyToClipboard(subjectText);
+          if (success) {
+            showToast('Copied Subject Line!', subjectText);
+          }
+        });
+      }
+
+      // Copy Both
+      if (btnCopyAll) {
+        btnCopyAll.addEventListener('click', async () => {
+          const subjectText = generateSubject();
+          const plainText = `Subject: ${subjectText}\n\n${generatePlainText()}`;
+          const richHtml = `<div style="font-family: Arial, sans-serif;"><b>Subject:</b> ${subjectText}<br><br>${generateRichHtml()}</div>`;
+          const success = await copyToClipboard(plainText, true, richHtml);
+          if (success) {
+            triggerConfetti();
+            showToast('Full Email Copied!', 'Subject and Body copied to clipboard');
+          }
+        });
+      }
+    }
+
+    function setupToggleListener(selector, stateKey, callback) {
+      const container = document.querySelector(`[data-toggle="${selector}"]`);
+      if (!container) return;
+      container.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-yn');
+        if (!btn) return;
+        const val = btn.getAttribute('data-val');
+        state[stateKey] = val;
+        renderToggle(selector, val);
+        if (callback) callback(val);
+        saveState();
+        updatePreview();
+      });
+    }
+
+    // --- Content Generators ---
+    function generateSubject() {
+      const brand = state.brand || 'Old Navy';
+      const marketsStr = state.markets && state.markets.length ? state.markets.join(', ') : 'US';
+      const tidsStr = state.tids && state.tids.length ? state.tids.join(', ') : 'TID';
+      const cid = state.cid ? ` [CID: ${state.cid}]` : '';
+      const requester = state.requester ? ` - ${state.requester}` : '';
+      return `[Email Request] ${brand} (${marketsStr}) - TID: ${tidsStr}${cid}${requester}`;
+    }
+
+    function generatePlainText() {
+      const r = state.requester ? state.requester : '[Not Specified]';
+      const cid = state.cid ? state.cid : '';
+      const marketsStr = state.markets && state.markets.length ? state.markets.join(', ') : '[None selected]';
+      const languagesStr = state.languages && state.languages.length ? state.languages.join(', ') : '[None selected]';
+      const podIdsStr = state.podIds && state.podIds.length ? state.podIds.join(', ') : '[None selected]';
+      const tidsStr = state.tids && state.tids.length ? state.tids.join(', ') : '[None selected]';
+      const notes = state.notes ? `\n\nSPECIAL INSTRUCTIONS / NOTES:\n${state.notes}` : '';
+
+      // Department lock lines when EV_Segment 1 is N
+      let deptLines = '';
+      let deptTableLines = '';
+      if (state.evSegment === 'N') {
+        deptLines += `\n• Department Lock?: ${state.deptLock}`;
+        deptTableLines += `\nDepartment Lock?               | ${state.deptLock}`;
+        if (state.deptLock === 'Y') {
+          const depts = state.departments && state.departments.length ? state.departments.join(', ') : '[None selected]';
+          deptLines += `\n• Department(s): ${depts}`;
+          deptTableLines += `\nDepartment(s)                  | ${depts}`;
+        }
+      }
+
+      if (state.viewStyle === 'table') {
+        return `Hi Team,
+
+Please find the Constructor widget configuration parameters below:
+
+==================================================
+CONFIGURATION SPECIFICATIONS
+==================================================
+Parameter                      | Value
+--------------------------------------------------
+Requester                      | ${r}
+Total Items                    | ${state.totalItems}
+Brand                          | ${state.brand}
+Language                       | ${languagesStr}
+Market                         | ${marketsStr}
+POD ID                         | ${podIdsStr}
+TID                            | ${tidsStr}
+CID (Category ID)              | ${cid}
+--------------------------------------------------
+Recommend Sale Only?           | ${state.recSale}
+Recommend Promo Only?          | ${state.recPromo}
+Recommend Clearance Only?      | ${state.recClearance}
+EV_Segment 1 Enabled?          | ${state.evSegment}${deptTableLines}
+--------------------------------------------------
+Remove trackingid              | ${state.removeTracking}
+Remove CustomerID              | ${state.removeCustomerId}
+Remove Cache Token             | ${state.removeCache}
+==================================================${notes}
+
+Thank you!`;
+      }
+
+      return `Hi Team,
+
+Please find the Constructor widget configuration parameters below:
+
+GENERAL & MARKET CONFIG:
+• Requester: ${r}
+• Total Items: ${state.totalItems}
+• Brand: ${state.brand}
+• Language: ${languagesStr}
+• Market: ${marketsStr}
+
+TECHNICAL IDENTIFIERS:
+• POD ID: ${podIdsStr}
+• TID: ${tidsStr}
+• CID (Category ID): ${cid}
+
+RECOMMENDATION RULES:
+• Recommend Sale Only?: ${state.recSale}
+• Recommend Promo Only?: ${state.recPromo}
+• Recommend Clearance Only?: ${state.recClearance}
+• EV_Segment 1 Enabled?: ${state.evSegment}${deptLines}
+
+TRACKING & CACHE SETTINGS:
+• Remove trackingid: ${state.removeTracking}
+• Remove CustomerID: ${state.removeCustomerId}
+• Remove Cache Token: ${state.removeCache}${notes}
+
+Thank you!`;
+    }
+
+    function generateRichHtml() {
+      const r = state.requester ? state.requester : '<span style="color:#94a3b8; font-style:italic;">[Not Specified]</span>';
+      const cid = state.cid 
+        ? `<code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-family:monospace; color:#0f172a;">${escapeHtml(state.cid)}</code>` 
+        : '';
+      
+      const formatBadges = (arr) => {
+        if (!arr || !arr.length) return '<span style="color:#94a3b8; font-style:italic;">[None selected]</span>';
+        return arr.map(item => `<code style="background:#e0e7ff; color:#3730a3; padding:2px 6px; border-radius:4px; font-family:monospace; margin-right:4px; display:inline-block; margin-bottom:2px;">${item}</code>`).join(' ');
+      };
+
+      const formatList = (arr) => {
+        if (!arr || !arr.length) return '<span style="color:#94a3b8; font-style:italic;">[None selected]</span>';
+        return arr.join(', ');
+      };
+
+      const notesHtml = state.notes 
+        ? `<div style="margin-top:16px; padding:12px 16px; background-color:#eff6ff; border-left:4px solid #2563eb; border-radius:6px; font-size:13px; color:#1e3a8a;">
+            <b style="color:#1d4ed8; text-transform:uppercase; font-size:11px; letter-spacing:0.5px;">Special Instructions:</b><br>
+            ${state.notes.replace(/\n/g, '<br>')}
+          </div>` 
+        : '';
+
+      const badgeY = (val) => val === 'Y' 
+        ? '<strong style="display:inline-block; padding:2px 8px; font-size:11px; font-weight:800; color:#047857; background:#d1fae5; border:1px solid #a7f3d0; border-radius:6px;">✓ Y</strong>' 
+        : '<strong style="display:inline-block; padding:2px 8px; font-size:11px; font-weight:700; color:#64748b; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px;">✕ N</strong>';
+
+      // Department lock rich HTML rows/items
+      let deptHtmlTable = '';
+      let deptHtmlList = '';
+      if (state.evSegment === 'N') {
+        deptHtmlTable += `<tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Department Lock?</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.deptLock)}</td></tr>`;
+        deptHtmlList += `<li><b>Department Lock?:</b> ${badgeY(state.deptLock)}</li>`;
+        if (state.deptLock === 'Y') {
+          const deptsBadges = state.departments && state.departments.length 
+            ? state.departments.map(d => `<code style="background:#e0e7ff; color:#3730a3; padding:2px 6px; border-radius:4px; font-family:monospace; margin-right:4px; font-weight:700;">${d}</code>`).join(' ')
+            : '<span style="color:#94a3b8; font-style:italic;">[None selected]</span>';
+          deptHtmlTable += `<tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Department(s)</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${deptsBadges}</td></tr>`;
+          deptHtmlList += `<li><b>Department(s):</b> ${deptsBadges}</li>`;
+        }
+      }
+
+      if (state.viewStyle === 'table') {
+        return `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.5;">
+          <p style="margin-bottom: 12px;">Hi Team,</p>
+          <p style="margin-bottom: 16px;">Please find the Constructor widget configuration parameters below:</p>
+          
+          <table style="width: 100%; max-width: 640px; border-collapse: separate; border-spacing: 0; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; margin-top: 14px; margin-bottom: 14px; font-size: 13px;">
+            <thead>
+              <tr style="background: linear-gradient(135deg, #002855 0%, #003875 100%); color: #ffffff;">
+                <th style="padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; width: 38%;">Parameter</th>
+                <th style="padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;">Configured Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Requester</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #0f172a;">${r}</td></tr>
+              <tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Total Items</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 700; color: #2563eb;">${state.totalItems} Items</td></tr>
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Brand</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;"><b>${state.brand}</b></td></tr>
+              <tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Language</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${formatList(state.languages)}</td></tr>
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Market</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;"><b>${formatList(state.markets)}</b></td></tr>
+              <tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">POD ID</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${formatBadges(state.podIds)}</td></tr>
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">TID</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${formatBadges(state.tids)}</td></tr>
+              <tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">CID (Category ID)</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${cid}</td></tr>
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Recommend Sale Only?</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.recSale)}</td></tr>
+              <tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Recommend Promo Only?</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.recPromo)}</td></tr>
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Recommend Clearance Only?</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.recClearance)}</td></tr>
+              <tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">EV_Segment 1 Enabled?</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.evSegment)}</td></tr>
+              ${deptHtmlTable}
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Remove trackingid</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.removeTracking)}</td></tr>
+              <tr style="background-color: #f8fafc;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Remove CustomerID</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.removeCustomerId)}</td></tr>
+              <tr style="background-color: #ffffff;"><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0; font-weight: 600; color: #334155;">Remove Cache Token</td><td style="padding: 7px 14px; border-top: 1px solid #e2e8f0;">${badgeY(state.removeCache)}</td></tr>
+            </tbody>
+          </table>
+          ${notesHtml}
+          <p style="margin-top: 16px; color: #475569;">Thank you!</p>
+        </div>`;
+      }
+
+      return `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.6;">
+        <p style="margin-bottom: 12px;">Hi Team,</p>
+        <p style="margin-bottom: 16px;">Please find the Constructor widget configuration parameters below:</p>
+
+        <p style="font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: #002855; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; margin-top: 14px;">GENERAL & MARKET CONFIG:</p>
+        <ul style="margin-top: 6px; margin-bottom: 14px; padding-left: 20px;">
+          <li><b>Requester:</b> ${r}</li>
+          <li><b>Total Items:</b> <span style="color:#2563eb; font-weight:700;">${state.totalItems} Items</span></li>
+          <li><b>Brand:</b> ${state.brand}</li>
+          <li><b>Language:</b> ${formatList(state.languages)}</li>
+          <li><b>Market:</b> <b>${formatList(state.markets)}</b></li>
+        </ul>
+
+        <p style="font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: #002855; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; margin-top: 14px;">TECHNICAL IDENTIFIERS:</p>
+        <ul style="margin-top: 6px; margin-bottom: 14px; padding-left: 20px;">
+          <li><b>POD ID:</b> ${formatBadges(state.podIds)}</li>
+          <li><b>TID:</b> ${formatBadges(state.tids)}</li>
+          <li><b>CID (Category ID):</b> ${cid}</li>
+        </ul>
+
+        <p style="font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: #002855; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; margin-top: 14px;">RECOMMENDATION RULES:</p>
+        <ul style="margin-top: 6px; margin-bottom: 14px; padding-left: 20px;">
+          <li><b>Recommend Sale Only?:</b> ${badgeY(state.recSale)}</li>
+          <li><b>Recommend Promo Only?:</b> ${badgeY(state.recPromo)}</li>
+          <li><b>Recommend Clearance Only?:</b> ${badgeY(state.recClearance)}</li>
+          <li><b>EV_Segment 1 Enabled?:</b> ${badgeY(state.evSegment)}</li>
+          ${deptHtmlList}
+        </ul>
+
+        <p style="font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: #002855; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; margin-top: 14px;">TRACKING & CACHE SETTINGS:</p>
+        <ul style="margin-top: 6px; margin-bottom: 14px; padding-left: 20px;">
+          <li><b>Remove trackingid:</b> ${badgeY(state.removeTracking)}</li>
+          <li><b>Remove CustomerID:</b> ${badgeY(state.removeCustomerId)}</li>
+          <li><b>Remove Cache Token:</b> ${badgeY(state.removeCache)}</li>
+        </ul>
+
+        ${notesHtml}
+
+        <p style="margin-top: 18px; color: #475569;">Thank you!</p>
+      </div>`;
+    }
+
+    function updatePreview() {
+      const subject = generateSubject();
+      if (previewSubject) previewSubject.textContent = subject;
+
+      if (previewBody) {
+        if (state.viewStyle === 'table') {
+          previewBody.innerHTML = generateRichHtml();
+        } else {
+          // Monospace/plain formatting inside preview window
+          previewBody.innerHTML = `<pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; margin: 0;">${escapeHtml(generatePlainText())}</pre>`;
+        }
+      }
+
+      if (previewSummaryChip) {
+        const marketsChip = state.markets && state.markets.length ? state.markets.join('+') : 'None';
+        const langChip = state.languages && state.languages.length ? state.languages.join('+') : 'None';
+        const podCount = state.podIds ? state.podIds.length : 0;
+        const tidCount = state.tids ? state.tids.length : 0;
+        let lockSummary = '';
+        if (state.evSegment === 'N' && state.deptLock === 'Y' && state.departments && state.departments.length) {
+          lockSummary = ` • Lock: ${state.departments.join(',')}`;
+        }
+        previewSummaryChip.textContent = `${state.brand} • ${marketsChip} (${langChip}) • ${state.totalItems} Items • ${podCount} POD / ${tidCount} TID${lockSummary}`;
+      }
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // --- Clipboard Helper ---
+    async function copyToClipboard(text, isHtml = false, htmlContent = '') {
+      try {
+        if (isHtml && htmlContent && navigator.clipboard && window.ClipboardItem) {
+          const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+          const blobPlain = new Blob([text], { type: 'text/plain' });
+          const item = new ClipboardItem({
+            'text/html': blobHtml,
+            'text/plain': blobPlain
+          });
+          await navigator.clipboard.write([item]);
+          return true;
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch (err) {
+        console.warn('ClipboardItem error, falling back', err);
+      }
+
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        const success = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return success;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // --- Confetti Celebration Effect ---
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#002855', '#2563eb', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6'];
+      const particles = [];
+
+      for (let i = 0; i < 65; i++) {
+        particles.push({
+          x: canvas.width / 2 + (Math.random() * 200 - 100),
+          y: canvas.height / 2 + (Math.random() * 100 - 50),
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.8) * 16,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vrot: (Math.random() - 0.5) * 10,
+          opacity: 1
+        });
+      }
+
+      let animationFrame;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45; // Gravity
+          p.vx *= 0.98; // Drag
+          p.rotation += p.vrot;
+          p.opacity -= 0.018;
+
+          if (p.opacity > 0) {
+            alive = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.opacity;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          }
+        });
+
+        if (alive) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+
+      animate();
+    }
+
+    // --- Toast Notifications ---
+    function showToast(title, message, isSuccess = true) {
+      if (!toast) return;
+      if (toastTimeout) clearTimeout(toastTimeout);
+      if (toastTitle) toastTitle.textContent = title;
+      if (toastMessage) toastMessage.textContent = message;
+
+      if (toastIconBg) {
+        if (isSuccess) {
+          toastIconBg.className = 'w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg';
+          toastIconBg.textContent = '✓';
+        } else {
+          toastIconBg.className = 'w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg';
+          toastIconBg.textContent = '⚠️';
+        }
+      }
+
+      toast.classList.remove('hidden');
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Run on startup
+    init();
+  </script>
+</body>
+</html>
